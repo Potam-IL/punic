@@ -47,23 +47,24 @@ class Xcode(object):
             all_xcodes.update(Xcode(path) for path in Path("/Applications").glob("Xcode*.app"))
             output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
             all_xcodes.update(Xcode(Path(path)) for path in output.strip().split("\n"))
-
-            # TODO: what if no default is set?
-            default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
-
-            default_xcode = Xcode(list(default_developer_dir_path.parents)[1])
-            default_xcode.is_default = True
-            all_xcodes.add(default_xcode)
-
-            print(all_xcodes)
-            print(default_xcode)
-
             Xcode._all_xcodes = all_xcodes
-            Xcode._default_xcode = default_xcode
+
+            default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
+            Xcode._default_xcode = Xcode(default_developer_dir_path.parent.parent)
+            Xcode._default_xcode.is_default = True
+
+            all_xcodes.discard(Xcode._default_xcode)
+            all_xcodes.add(Xcode._default_xcode)
+
+            print(Xcode._all_xcodes)
 
         return Xcode._all_xcodes
 
     def __init__(self, path):
+
+        assert(path.is_dir())
+        assert(path.suffix == '.app')
+
         self.path = path
         self.is_default = False
         self.developer_dir_path = self.path / 'Contents/Developer'
@@ -103,7 +104,10 @@ class Xcode(object):
         return result.stdout
 
     def __repr__(self):
-        return '{} ({}/{})'.format(self.path, self.version, self.internal_version)
+        s = '{} ({}/{})'.format(self.path, self.version, self.internal_version)
+        if self.is_default:
+            s += ' (default)'
+        return s
 
     def __eq__(self, other):
         return self.internal_version == other.internal_version
