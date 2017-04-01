@@ -1,4 +1,8 @@
 machine:
+  pre:
+    # from https://discuss.circleci.com/t/virtualenv-error-on-osx-build/387/2
+    - pip install --user --ignore-installed --upgrade --verbose virtualenv
+    - ln -s ~/Library/Python/2.7/bin/virtualenv /usr/local/bin/virtualenv
   xcode:
     version: 8.3
 dependencies:
