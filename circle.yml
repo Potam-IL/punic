@@ -1,9 +1,7 @@
 machine:
   pre:
     # from https://discuss.circleci.com/t/virtualenv-error-on-osx-build/387/2
-    - pip install --user --ignore-installed --upgrade --verbose virtualenv
-    - ln -s ~/Library/Python/2.7/bin/virtualenv /usr/local/bin/virtualenv
-# sudo -H pip install --upgrade virtualenv
+    - sudo -H pip install --upgrade virtualenv
   xcode:
     version: 8.3
 dependencies:
@@ -11,10 +9,10 @@ dependencies:
     - brew install python
     - brew install python3
     - brew install libyaml
-    - pip install --user nose
-    - pip install --user tox
-    - pip install --user pytest
-    - pip install --user pytest-cov
+    - sudo -H pip install nose
+    - sudo -H pip install tox
+    - sudo -H pip install pytest
+    - sudo -H pip install pytest-cov
 compile:
   override:
 test:
