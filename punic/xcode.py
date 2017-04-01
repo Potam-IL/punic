@@ -62,6 +62,8 @@ class Xcode(object):
 
     def __init__(self, path):
 
+        print(path)
+
         assert(path.is_dir())
         assert(path.suffix == '.app')
 
