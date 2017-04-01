@@ -6,6 +6,7 @@ machine:
     - sudo -H pip install --upgrade virtualenv
 dependencies:
   override:
+    - /usr/bin/mdfind 'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"'
     - xcode-select -p
     - brew install python
     - brew install python3
