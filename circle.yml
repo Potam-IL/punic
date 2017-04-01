@@ -1,0 +1,14 @@
+machine:
+  xcode:
+    version: 8.3
+dependencies:
+  override:
+    - brew install python
+    - brew install python3
+    - pip install nose
+    - pip install tox
+    - pip install pytest
+    - pip install pytest-cov
+test:
+  override:
+    - tox
