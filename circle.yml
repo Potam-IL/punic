@@ -2,7 +2,7 @@ machine:
   xcode:
     version: 8.3
 dependencies:
-  override:
+  pre:
     - brew install python
     - brew install python3
     - pip install nose
