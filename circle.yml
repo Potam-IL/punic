@@ -1,11 +1,12 @@
 machine:
+  xcode:
+    version: 8.3
   pre:
     # from https://discuss.circleci.com/t/virtualenv-error-on-osx-build/387/2
     - sudo -H pip install --upgrade virtualenv
-  xcode:
-    version: 8.3
 dependencies:
   override:
+    - xcode-select -p
     - brew install python
     - brew install python3
     - brew install libyaml
