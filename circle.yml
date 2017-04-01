@@ -7,9 +7,11 @@ machine:
 dependencies:
   override:
     - brew install libyaml
+    - brew install python
+
     - sudo -H pip install -e .
     - punic search pmjson
-    - brew install python
+
     - brew install python3
     - sudo -H pip install nose
     - sudo -H pip install tox
