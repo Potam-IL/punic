@@ -47,14 +47,26 @@ class Xcode(object):
             all_xcodes.update(Xcode(path) for path in Path("/Applications").glob("Xcode*.app"))
             output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
             all_xcodes.update(Xcode(Path(path)) for path in output.strip().split("\n"))
-            Xcode._all_xcodes = all_xcodes
+
+            print('*' * 80)
+            print(all_xcodes)
+
+            print('*' * 80)
 
             default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
-            Xcode._default_xcode = Xcode(default_developer_dir_path.parent.parent)
+            print(default_developer_dir_path)
+
+            if six.text_type(default_developer_dir_path).endswith('/Contents/Developer'):
+                default_developer_dir_path = default_developer_dir_path.parent.parent
+            print(default_developer_dir_path)
+
+            Xcode._default_xcode = Xcode(default_developer_dir_path)
             Xcode._default_xcode.is_default = True
 
             all_xcodes.discard(Xcode._default_xcode)
             all_xcodes.add(Xcode._default_xcode)
+
+            Xcode._all_xcodes = all_xcodes
 
             print(Xcode._all_xcodes)
 
