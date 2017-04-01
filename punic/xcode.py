@@ -41,14 +41,25 @@ class Xcode(object):
     @classmethod
     def find_all(cls):
         if Xcode._all_xcodes is None:
-            output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
-            all_xcodes = [Xcode(Path(path)) for path in output.strip().split("\n")]
-            Xcode._all_xcodes = all_xcodes
-            print(all_xcodes)
 
+            all_xcodes = set()
+
+            all_xcodes.update(Xcode(path) for path in Path("/Applications").glob("Xcode*.app"))
+            output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
+            all_xcodes.update(Xcode(Path(path)) for path in output.strip().split("\n"))
+
+            # TODO: what if no default is set?
             default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
-            Xcode._default_xcode = [xcode for xcode in all_xcodes if xcode.developer_dir_path == default_developer_dir_path][0]
-            Xcode._default_xcode.is_default = True
+
+            default_xcode = Xcode(list(default_developer_dir_path.parents)[1])
+            default_xcode.is_default = True
+            all_xcodes.add(default_xcode)
+
+            print(all_xcodes)
+            print(default_xcode)
+
+            Xcode._all_xcodes = all_xcodes
+            Xcode._default_xcode = default_xcode
 
         return Xcode._all_xcodes
 
@@ -103,6 +114,8 @@ class Xcode(object):
     def __lt__(self, other):
         return self.internal_version < other.internal_version
 
+    def __hash__(self):
+        return hash(self.internal_version)
 
 ########################################################################################################################
 
