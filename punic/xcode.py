@@ -44,6 +44,7 @@ class Xcode(object):
             output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
             all_xcodes = [Xcode(Path(path)) for path in output.strip().split("\n")]
             Xcode._all_xcodes = all_xcodes
+            print(all_xcodes)
 
             default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
             Xcode._default_xcode = [xcode for xcode in all_xcodes if xcode.developer_dir_path == default_developer_dir_path][0]
