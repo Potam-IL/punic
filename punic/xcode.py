@@ -42,7 +42,11 @@ class Xcode(object):
     def find_all(cls):
         if Xcode._all_xcodes is None:
             output = runner.check_run('/usr/bin/mdfind \'kMDItemCFBundleIdentifier="com.apple.dt.Xcode" and kMDItemContentType="com.apple.application-bundle"\'')
-            all_xcodes = [Xcode(Path(path)) for path in output.strip().split("\n")]
+            all_xcodes = [
+                Xcode(Path(path))
+                for path in output.strip().split("\n")
+                if len(path) > 0  # otherwise empty output processes [u""]
+                ]
             Xcode._all_xcodes = all_xcodes
 
             default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
