@@ -50,6 +50,13 @@ class Xcode(object):
             Xcode._all_xcodes = all_xcodes
 
             default_developer_dir_path = Path(runner.check_run(['xcode-select', '-p']).strip())
+            mdfind_failed = len(all_xcodes) == 0
+            if mdfind_failed:
+                # Back up from /Applications/Xcode.app/Contents/Developer to
+                # /Application/Xcode.app and build an Xcode around that.
+                fallback = default_developer_dir_path.parent.parent
+                all_xcodes = [Xcode(fallback)]
+                Xcode._all_xcodes = all_xcodes
             Xcode._default_xcode = [xcode for xcode in all_xcodes if xcode.developer_dir_path == default_developer_dir_path][0]
             Xcode._default_xcode.is_default = True
 
